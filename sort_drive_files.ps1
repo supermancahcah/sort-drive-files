@@ -1,10 +1,11 @@
-﻿#a powershell script for sorting the files on the root of drive.
+#a powershell script for sorting the files on the root of drive.
 
 $tg='f:\'  #modify this value to set the drive
 
 $files=[System.IO.Directory]::GetFiles($tg)
-$files | ForEach-Object {
-    $ext=[System.IO.Path]::GetExtension($_)
+
+Foreach($file in $files){
+    $ext=[System.IO.Path]::GetExtension($file)
 
     if($ext.Length -ge 2)
     {
@@ -15,13 +16,16 @@ $files | ForEach-Object {
     {
         $ext='misc'
     }
+
+    if($ext -eq 'sys') { continue }
+
     $tp=[System.IO.Path]::Combine($tg,$ext)
     if( -Not [System.IO.Directory]::Exists($tp))
     {
         [System.IO.Directory]::CreateDirectory($tp)
     }
-    $src_file=$_
-    $t_file=$tp+'\' +[System.IO.Path]::GetFileName($_)
+    $src_file=$file
+    $t_file=$tp+'\' +[System.IO.Path]::GetFileName($file)
     [System.IO.File]::Move($src_file ,$t_file)
 }
 
